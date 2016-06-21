@@ -1,0 +1,23 @@
+{
+  "name": "infection",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Rlin415/Infection.git"
+  },
+  "author": "Robert Lin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Rlin415/Infection/issues"
+  },
+  "homepage": "https://github.com/Rlin415/Infection#readme",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^2.5.3"
+  }
+}
