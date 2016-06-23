@@ -11,7 +11,64 @@ describe('Virus', function() {
     expect(virus.totalInfection).to.exist;
   });
 
+  it('should have a method named limitedInfection', function() {
+    expect(virus.limitedInfection).to.exist;
+  });
+
   describe('#totalInfection', function() {
+
+    let inside, max, begUser;
+
+    before(function() {
+      inside = [];
+      max = 20;
+      begUser = User.create(1, 'A', 'Washington');
+
+      inside.push(begUser);
+
+      for (let i = 2; i < 20; i++) {
+        let user = User.create(i, 'A', 'Washington');
+        for (let j = max; j < max + i; j++) {
+          if (Math.floor(Math.random() * 2)) {
+            let teacher = User.create(j, 'A', 'Washington');
+            user.addTeacher(teacher);
+            inside.push(teacher);
+          } else {
+            let student = User.create(j, 'A', 'Washington');
+            user.addStudent(student);
+            inside.push(student);
+          }
+        }
+        max = max + i;
+        inside.push(user);
+        Math.floor(Math.random() * 2) ? begUser.addTeacher(user) : begUser.addStudent(user);
+      }
+    });
+
+    it('should be a function', function() {
+      expect(virus.totalInfection).to.be.a('function');
+    });
+
+    it('should infect a user that is inside the coaching graph of an infected user', function() {
+      let teacher = User.create(1, 'A', 'Washington');
+      let student = User.create(2, 'A', 'Washington');
+      teacher.addStudent(student);
+      virus.totalInfection(teacher, 'B');
+      expect(student.version).to.equal('B');
+    });
+
+    it('should infect all users that are inside the coaching graph of an infected user', function() {
+      virus.totalInfection(begUser, 'B');
+      expect(inside).to.satisfy(function(users) {
+        for (let user of users) {
+          if (user.version !== 'B') return false;
+        }
+        return true;
+      });
+    });
+  });
+
+  describe('#limitedInfection', function() {
 
     let outside, inside, max, begUser;
 
@@ -19,19 +76,19 @@ describe('Virus', function() {
       inside = [];
       outside = [];
       max = 20;
-      begUser = User.create('A', 1);
+      begUser = User.create(1, 'A', 'Washington');
 
       inside.push(begUser);
 
       for (let i = 2; i < 20; i++) {
-        let user = User.create('A', i);
+        let user = User.create(i, 'A', 'Washington');
         for (let j = max; j < max + i; j++) {
           if (Math.floor(Math.random() * 2)) {
-            let teacher = User.create('A', j);
+            let teacher = User.create(j, 'A', 'Washington');
             user.addTeacher(teacher);
             inside.push(teacher);
           } else {
-            let student = User.create('A', j);
+            let student = User.create(j, 'A', 'Washington');
             user.addStudent(student);
             inside.push(student);
           }
@@ -42,35 +99,35 @@ describe('Virus', function() {
       }
 
       for (let i = max; i < max + 100; i++) {
-        let user = User.create('A', i);
+        let user = User.create(i, 'A', 'Lincoln');
+        let randUser = inside[Math.floor(Math.random() * inside.length)];
+        Math.floor(Math.random() * 2) ? randUser.addTeacher(user) : randUser.addStudent(user);
         outside.push(user);
       }
-
     });
 
     it('should be a function', function() {
-      expect(virus.totalInfection).to.be.a('function');
+      expect(virus.limitedInfection).to.be.a('function');
     });
 
-    it('should infect a user that is inside the coaching graph of an infected user', function() {
-      let teacher = User.create('A', 1);
-      let student = User.create('A', 2);
+    it('should infect a user that is inside the coaching graph and school of an infected user', function() {
+      let teacher = User.create(1, 'A', 'Washington');
+      let student = User.create(2, 'A', 'Washington');
       teacher.addStudent(student);
-      virus.totalInfection(teacher, 'B');
+      virus.limitedInfection(teacher, 'B');
       expect(student.version).to.equal('B');
     });
 
-    it('should not infect a user that\'s outside the coaching graph of an infected user', function() {
-      let teacher = User.create('A', 1);
-      let student = User.create('A', 2);
-      let randomUser = User.create('A', 3);
+    it('should not infect a user that is inside the coaching graph, but outside the school of an infected user', function() {
+      let teacher = User.create(1, 'A', 'Washington');
+      let student = User.create(2, 'A', 'Lincoln');
       teacher.addStudent(student);
-      virus.totalInfection(teacher, 'B');
-      expect(randomUser.version).to.not.equal('B');
+      virus.limitedInfection(teacher, 'B');
+      expect(student.version).to.not.equal('B');
     });
 
-    it('should infect all users that are inside the coaching graph of an infected user', function() {
-      virus.totalInfection(begUser, 'B');
+    it('should infect all users that are inside the coaching graph and school of an infected user', function() {
+      virus.limitedInfection(begUser, 'B');
       expect(inside).to.satisfy(function(users) {
         for (let user of users) {
           if (user.version !== 'B') return false;
@@ -87,6 +144,6 @@ describe('Virus', function() {
         return true;
       });
     });
-
   });
+
 });
