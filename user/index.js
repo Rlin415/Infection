@@ -6,10 +6,11 @@ module.exports = {
   addTeacher
 };
 
-function create(version, id) {
+function create(id, version, school) {
   let user = Object.create(this);
-  user.version = version;
   user.id = id;
+  user.version = version;
+  user.school = school;
   user.students = {};
   user.teachers = {};
   return user;
