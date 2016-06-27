@@ -1,19 +1,21 @@
 "use strict";
 
 module.exports = {
-  infect
+  each,
+  double
 };
 
-function infect(list, ver, method, school) {
-  if (school) {
-    for (let key in list) {
-      let user = list[key];
-      if (user.school === school && user.version !== ver) method(user, ver);
-    }
-  } else {
-    for (let key in list) {
-      let user = list[key];
-      if (user.version !== ver) method(user, ver);
-    }
+function each(list, callback) {
+  for (let key in list) {
+    callback(list[key], key, list);
   }
+}
+
+function double(list1, list2, callback) {
+  this.each(list1, (value) => {
+    callback(value);
+  });
+  this.each(list2, (value) => {
+    callback(value);
+  });
 }

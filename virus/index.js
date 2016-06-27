@@ -12,8 +12,9 @@ function totalInfection(user, ver) {
   let teachers = user.teachers;
   let students = user.students;
   user.version = ver;
-  helpers.infect(teachers, ver, totalInfection);
-  helpers.infect(students, ver, totalInfection);
+  helpers.double(teachers, students, (person) => {
+    if (person.version !== ver) totalInfection(person, ver);
+  });
 }
 
 function limitedInfection(user, ver) {
@@ -21,6 +22,7 @@ function limitedInfection(user, ver) {
   let students = user.students;
   let school = user.school;
   user.version = ver;
-  helpers.infect(teachers, ver, limitedInfection, school);
-  helpers.infect(students, ver, limitedInfection, school);
+  helpers.double(teachers, students, (person) => {
+    if (person.version !== ver && person.school === school) limitedInfection(person, ver);
+  });
 }
