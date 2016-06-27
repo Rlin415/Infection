@@ -5,17 +5,17 @@ module.exports = {
   double
 };
 
-function each(list, callback) {
-  for (let key in list) {
-    callback(list[key], key, list);
+function each(set, callback) {
+  for (let key in set) {
+    callback(set[key], key, set);
   }
 }
 
-function double(list1, list2, callback) {
-  this.each(list1, (value) => {
+function double(set1, set2, callback) {
+  this.each(set1, (value) => {
     callback(value);
   });
-  this.each(list2, (value) => {
+  this.each(set2, (value) => {
     callback(value);
   });
 }
