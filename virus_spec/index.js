@@ -136,7 +136,7 @@ describe('Virus', function() {
       });
     });
 
-    it('should not infect any users that are outside the coaching graph of an infected user', function() {
+    it('should not infect any users that are inside the coaching graph, but outside the school of an infected user', function() {
       expect(outside).to.satisfy(function(users) {
         for (let user of users) {
           if (user.version === 'B') return false;
